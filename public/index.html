@@ -152,13 +152,20 @@
 						<h1>...Now back at your programmer</h1>
 					</div>
 				</div>
-				<div class="slide" style="display: none;" id="slide1">
+				<div class="slide" style="display: none;">
 					<div class="content">
 						<h1>Sadly, he isn't me.</h1>
 					</div>
 				</div>
-				<div class="slide" >
+				<div class="slide" style="display: none;">
 					<div class="content">
+						<img src="/img/programmers2.jpg" />
+						<h1>...Now back to me</h1>
+					</div>
+				</div>
+				<div class="slide">
+					<div class="content">
+						<img src="/img/programmers1.jpg" />
 						<h1>...Now back to me</h1>
 					</div>
 				</div>
@@ -172,29 +179,42 @@
 		</div>
 		<script type="text/javascript" src="/scripts/lib/javascript.fullPage.js"></script>
 		<script type="text/javascript">
+			function find(ele, selector, attr) {
+				while(ele && !ele.matches(selector)) {
+					ele = ele[attr];
+				}
+				return ele;
+			}
+			
+			function closest(ele, selector) {
+				return find(ele, selector, 'parentElement');
+			}
+			
 			var stateHelper = (function () {
 				var compareState = 0;
 				
-				function find(ele, selector, attr) {
-					while(ele && !ele.matches(selector)) {
-						ele = ele[attr];
-					}
-					return ele;
-				}
-				
-				function onSlideLoad(page, anchorLink, slideIndex) {
+				function onSlideLoad(slide, anchorLink, slideIndex) {
 					if(anchorLink === 'compare') {
-						if(slideIndex === 3) {
+						if(slideIndex > 2) {
 							compareState++;
-							var section = find(page, '.section', 'parentElement');
-							var slide = find(section, '.slide', 'firstElementChild');
+							var leftSlide = slide.parentElement.firstElementChild;
 							for(var i=0; i<3; i++) {
 								if(compareState == i) {
-									slide.style.display = 'block';
+									leftSlide.style.display = 'block';
 								} else {
-									slide.style.display = 'none';
+									leftSlide.style.display = 'none';
 								}
-								slide = slide.nextElementSibling;
+								leftSlide = leftSlide.nextElementSibling;
+							}
+						} else if (slideIndex < 2) {
+							var rightSlide = slide.parentElement.lastElementChild;
+							for(var i=0; i<3; i++) {
+								if(compareState == i) {
+									rightSlide.style.display = 'block';
+								} else {
+									rightSlide.style.display = 'none';
+								}
+								rightSlide = rightSlide.previousElementSibling;
 							}
 						} else if (compareState == 2 && slideIndex === 2) {
 							fullpage.setAllowScrolling(false, 'right');
@@ -225,7 +245,8 @@
 				menu: '#menu',
 				css3:true,
 				afterSlideLoad: function(anchorLink, sectionIndex, slideAnchor, slideIndex) {
-					stateHelper.onSlideLoad(this, anchorLink, slideIndex);
+					var slide = closest(this, '.slide');
+					stateHelper.onSlideLoad(slide, anchorLink, slideIndex);
 				},
 				afterLoad: function(anchorLink, sectionIndex) {
 					stateHelper.onLoad(this, anchorLink, sectionIndex);
