@@ -709,7 +709,7 @@
     function next(element){
         var nextSibling = element.nextSibling;
 
-        while(nextSibling && nextSibling.nodeType != 1) {
+        while(nextSibling && (nextSibling.nodeType != 1 || nextSibling.style.display == 'none')) {
             nextSibling = nextSibling.nextSibling;
         }
 
@@ -720,7 +720,7 @@
     function prev(element){
         var prevSibling = element.previousSibling;
 
-        while(prevSibling && prevSibling.nodeType != 1) {
+        while(prevSibling && (prevSibling.nodeType != 1 || prevSibling.style.display == 'none')) {
             prevSibling = prevSibling.previousSibling;
         }
 
